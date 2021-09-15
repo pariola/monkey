@@ -29,7 +29,7 @@ return false;
 `
 
 	tests := []struct {
-		expectedToken   token.Token
+		expectedToken   token.Type
 		expectedLiteral string
 	}{
 		{token.LET, "let"},
@@ -112,11 +112,11 @@ return false;
 		strings.NewReader(input),
 	)
 
-	for i, test := range tests {
+	for _, test := range tests {
 
-		tok, lit := l.NextToken()
+		tok := l.NextToken()
 
-		assert.Equal(t, test.expectedToken, tok, "test", i)
-		assert.Equal(t, test.expectedLiteral, lit)
+		assert.Equal(t, test.expectedToken, tok.Type)
+		assert.Equal(t, test.expectedLiteral, tok.Literal)
 	}
 }

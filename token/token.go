@@ -1,9 +1,18 @@
 package token
 
-type Token int
+type Token struct {
+	Type    Type
+	Literal string
+}
+
+func New(t Type, l string) Token {
+	return Token{Type: t, Literal: l}
+}
+
+type Type int
 
 const (
-	ILLEGAL Token = iota
+	ILLEGAL Type = iota
 	EOF
 
 	// Identifiers, Numbers & literals
@@ -44,7 +53,7 @@ const (
 	RETURN   // return
 )
 
-var keywords = map[string]Token{
+var keywords = map[string]Type{
 	"fn":     FUNCTION,
 	"let":    LET,
 	"true":   TRUE,
@@ -57,8 +66,8 @@ var keywords = map[string]Token{
 func Normalize(ident string) Token {
 
 	if t, ok := keywords[ident]; ok {
-		return t
+		return New(t, ident)
 	}
 
-	return IDENT
+	return New(IDENT, ident)
 }

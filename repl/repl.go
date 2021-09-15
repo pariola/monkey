@@ -34,13 +34,13 @@ func Start(in io.Reader, out io.Writer) {
 
 		for {
 
-			tok, lit := l.NextToken()
+			tok := l.NextToken()
 
-			if tok == token.EOF {
+			if tok.Type == token.EOF {
 				break
 			}
 
-			fmt.Println(tok, lit)
+			fmt.Println(tok, tok.Literal)
 		}
 	}
 }

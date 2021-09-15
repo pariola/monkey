@@ -70,7 +70,7 @@ func (l Lexer) skipWhitespace() {
 	}
 }
 
-func (l Lexer) readIdent() (token.Token, string) {
+func (l Lexer) readIdent() token.Token {
 
 	var buf bytes.Buffer
 
@@ -85,11 +85,10 @@ func (l Lexer) readIdent() (token.Token, string) {
 		buf.WriteRune(r)
 	}
 
-	ident := buf.String()
-	return token.Normalize(ident), ident
+	return token.Normalize(buf.String())
 }
 
-func (l Lexer) readNumber() (token.Token, string) {
+func (l Lexer) readNumber() token.Token {
 
 	var hasPoint bool
 	var buf bytes.Buffer
@@ -107,10 +106,10 @@ func (l Lexer) readNumber() (token.Token, string) {
 		buf.WriteRune(r)
 	}
 
-	return token.NUMBER, buf.String()
+	return token.New(token.NUMBER, buf.String())
 }
 
-func (l *Lexer) NextToken() (token.Token, string) {
+func (l *Lexer) NextToken() token.Token {
 
 	// skip whitespaces early
 	l.skipWhitespace()
@@ -119,47 +118,47 @@ func (l *Lexer) NextToken() (token.Token, string) {
 
 	switch c {
 	case eof:
-		return token.EOF, ""
+		return token.New(token.EOF, "")
 	case '>':
-		return token.GT, ">"
+		return token.New(token.GT, ">")
 	case '<':
-		return token.LT, "<"
+		return token.New(token.LT, "<")
 	case '!':
 
 		if l.peek() == '=' {
 			l.read()
-			return token.NOT_EQ, "!="
+			return token.New(token.NOT_EQ, "!=")
 		}
 
-		return token.BANG, "!"
+		return token.New(token.BANG, "!")
 	case '+':
-		return token.PLUS, "+"
+		return token.New(token.PLUS, "+")
 	case '-':
-		return token.MINUS, "-"
+		return token.New(token.MINUS, "-")
 	case '/':
-		return token.SLASH, "/"
+		return token.New(token.SLASH, "/")
 	case ',':
-		return token.COMMA, ","
+		return token.New(token.COMMA, ",")
 	case '(':
-		return token.LPAREN, "("
+		return token.New(token.LPAREN, "(")
 	case ')':
-		return token.RPAREN, ")"
+		return token.New(token.RPAREN, ")")
 	case '{':
-		return token.LBRACE, "{"
+		return token.New(token.LBRACE, "{")
 	case '}':
-		return token.RBRACE, "}"
+		return token.New(token.RBRACE, "}")
 	case '=':
 
 		if l.peek() == '=' {
 			l.read()
-			return token.EQ, "=="
+			return token.New(token.EQ, "==")
 		}
 
-		return token.ASSIGN, "="
+		return token.New(token.ASSIGN, "=")
 	case '*':
-		return token.ASTERISK, "*"
+		return token.New(token.ASTERISK, "*")
 	case ';':
-		return token.SEMICOLON, ";"
+		return token.New(token.SEMICOLON, ";")
 	default:
 		// handle identifiers & keywords here
 
@@ -171,6 +170,6 @@ func (l *Lexer) NextToken() (token.Token, string) {
 			return l.readNumber()
 		}
 
-		return token.ILLEGAL, "ILLEGAL"
+		return token.New(token.ILLEGAL, "ILLEGAL")
 	}
 }
