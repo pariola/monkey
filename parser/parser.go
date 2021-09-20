@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"fmt"
+
 	"monkey/ast"
 	"monkey/lexer"
 	"monkey/token"
@@ -8,6 +10,8 @@ import (
 
 type Parser struct {
 	l *lexer.Lexer
+
+	errors []string
 
 	curToken  token.Token
 	peekToken token.Token
@@ -59,6 +63,8 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	s := &ast.LetStatement{Token: p.curToken}
 
 	if p.peekToken.Type != token.IDENT {
+		err := fmt.Sprintf("expected token %d but got %d", token.IDENT, p.peekToken.Type)
+		p.errors = append(p.errors, err)
 		return nil
 	}
 
@@ -70,6 +76,8 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 	}
 
 	if p.peekToken.Type != token.ASSIGN {
+		err := fmt.Sprintf("expected token %d but got %d", token.ASSIGN, p.peekToken.Type)
+		p.errors = append(p.errors, err)
 		return nil
 	}
 
