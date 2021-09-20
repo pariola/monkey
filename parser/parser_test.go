@@ -47,6 +47,34 @@ let foobar = 838383;
 	}
 }
 
+func TestReturnStatements(t *testing.T) {
+	input := `
+return 5;
+return 10.3;
+return add(1, 4);
+`
+	l := lexer.NewLexer(
+		strings.NewReader(input),
+	)
+
+	p := NewParser(l)
+	program := p.Parse()
+
+	if program == nil {
+		t.Fatalf("Parse() returned nil")
+	}
+
+	require.Equal(t, 3, len(program.Statements), "program.Statements does not contain 3 statements")
+
+	for _, stmt := range program.Statements {
+		returnStmt, ok := stmt.(*ast.ReturnStatement)
+
+		assert.True(t, ok, "statement not a ReturnStatement")
+
+		assert.Equal(t, "return", returnStmt.TokenLiteral())
+	}
+}
+
 func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 
 	if assert.Equal(t, "let", s.TokenLiteral()) {
